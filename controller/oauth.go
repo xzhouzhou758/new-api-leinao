@@ -280,11 +280,28 @@ func HandleOAuth(c *gin.Context) {
 		handleOAuthError(c, err)
 		return
 	}
+<<<<<<< HEAD
 	if pendingFlow.Intent == model.AuthFlowIntentBind {
 		bindSucceeded, notificationFailed = handleOAuthBind(c, providerName, provider, oauthUser, pendingFlow, state, consumeMatch)
 		return
 	}
 	flow, err := model.ConsumeAuthFlow(state, consumeMatch)
+=======
+
+	flow := oauth.OAuthAccessFlowLogin
+	if isNewOAuthUser(provider, oauthUser) {
+		flow = oauth.OAuthAccessFlowRegister
+	}
+	if validator, ok := provider.(oauth.ConditionalAccessValidator); ok {
+		if err := validator.ValidateAccess(c.Request.Context(), token, oauthUser, flow); err != nil {
+			handleOAuthError(c, err)
+			return
+		}
+	}
+
+	// 7. Find or create user
+	user, err := findOrCreateOAuthUser(c, provider, oauthUser, session)
+>>>>>>> leinao/personal/dev
 	if err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": i18n.T(c, i18n.MsgOAuthStateInvalid)})
 		return
@@ -373,6 +390,18 @@ func handleOAuthBind(c *gin.Context, providerName string, provider oauth.Provide
 		writeSecurityOperationError(c, err)
 		return false, false
 	}
+<<<<<<< HEAD
+=======
+
+	if validator, ok := provider.(oauth.ConditionalAccessValidator); ok {
+		if err := validator.ValidateAccess(c.Request.Context(), token, oauthUser, oauth.OAuthAccessFlowBind); err != nil {
+			handleOAuthError(c, err)
+			return
+		}
+	}
+
+	// Check if this OAuth account is already bound (check both new ID and legacy ID)
+>>>>>>> leinao/personal/dev
 	if provider.IsUserIDTaken(oauthUser.ProviderUserID) {
 		common.ApiErrorI18n(c, i18n.MsgOAuthAlreadyBound, providerParams(provider.GetName()))
 		return false, false
@@ -402,6 +431,20 @@ func handleOAuthBind(c *gin.Context, providerName string, provider oauth.Provide
 	notificationFailed := service.NotifyAccountSecurityChange(user.Email, "Login account linked: "+provider.GetName()) != nil
 	common.ApiSuccessI18n(c, i18n.MsgOAuthBindSuccess, gin.H{"action": "bind", "notification_warning": notificationFailed})
 	return true, notificationFailed
+}
+
+func isNewOAuthUser(provider oauth.Provider, oauthUser *oauth.OAuthUser) bool {
+	if provider.IsUserIDTaken(oauthUser.ProviderUserID) {
+		return false
+	}
+
+	if legacyID, ok := oauthUser.Extra["legacy_id"].(string); ok && legacyID != "" {
+		if provider.IsUserIDTaken(legacyID) {
+			return false
+		}
+	}
+
+	return true
 }
 
 // findOrCreateOAuthUser finds existing user or creates new user

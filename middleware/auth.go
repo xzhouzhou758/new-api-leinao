@@ -462,6 +462,10 @@ func TokenAuth() func(c *gin.Context) {
 			abortWithOpenAiMessage(c, http.StatusForbidden, common.TranslateMessage(c, i18n.MsgAuthUserBanned))
 			return
 		}
+		if err := service.EnsureUserHasDonationChannel(token.UserId, userCache.Group, model.IsAdmin(token.UserId)); err != nil {
+			abortWithOpenAiMessage(c, http.StatusForbidden, err.Error(), types.ErrorCodeAccessDenied)
+			return
+		}
 
 		userCache.WriteContext(c)
 

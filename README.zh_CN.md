@@ -153,8 +153,12 @@ docker run --name new-api -d --restart always \
 
 🎉 部署完成后，访问 `http://localhost:3000` 即可使用！
 
+<<<<<<< HEAD
 > [!WARNING]
 > 将本项目作为面向公众的生成式 AI 服务或 API 转售服务运营时，使用者应先完成备案、内容安全、实名、日志留存、税务、支付和上游授权等合规义务。
+=======
+⚡ 也可以直接通过 [Zeabur 模板](https://zeabur.com/zh-CN/templates/0EHHPL) 部署相同版本。
+>>>>>>> leinao/personal/dev
 
 📖 更多部署方式请参考 [部署指南](https://docs.newapi.pro/zh/docs/installation)
 
@@ -344,6 +348,10 @@ docker run --name new-api -d --restart always \
 </details>
 
 ### 🔧 部署方式
+
+### ⚡ Zeabur 一键部署
+
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/zh-CN/templates/0EHHPL)
 
 <details>
 <summary><strong>方式 1：Docker Compose（推荐）</strong></summary>

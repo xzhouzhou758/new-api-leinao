@@ -356,6 +356,7 @@ func migrateDB() error {
 		&TwoFA{},
 		&TwoFABackupCode{},
 		&Checkin{},
+		&DonationChannelSubmission{},
 		&SubscriptionOrder{},
 		&UserSubscription{},
 		&SubscriptionPreConsumeRecord{},
@@ -389,6 +390,79 @@ func migrateDB() error {
 	return nil
 }
 
+<<<<<<< HEAD
+=======
+func migrateDBFast() error {
+
+	var wg sync.WaitGroup
+
+	migrations := []struct {
+		model interface{}
+		name  string
+	}{
+		{&Channel{}, "Channel"},
+		{&Token{}, "Token"},
+		{&User{}, "User"},
+		{&PasskeyCredential{}, "PasskeyCredential"},
+		{&Option{}, "Option"},
+		{&Redemption{}, "Redemption"},
+		{&Ability{}, "Ability"},
+		{&Log{}, "Log"},
+		{&Midjourney{}, "Midjourney"},
+		{&TopUp{}, "TopUp"},
+		{&QuotaData{}, "QuotaData"},
+		{&Task{}, "Task"},
+		{&Model{}, "Model"},
+		{&Vendor{}, "Vendor"},
+		{&PrefillGroup{}, "PrefillGroup"},
+		{&Setup{}, "Setup"},
+		{&TwoFA{}, "TwoFA"},
+		{&TwoFABackupCode{}, "TwoFABackupCode"},
+		{&Checkin{}, "Checkin"},
+		{&DonationChannelSubmission{}, "DonationChannelSubmission"},
+		{&SubscriptionOrder{}, "SubscriptionOrder"},
+		{&UserSubscription{}, "UserSubscription"},
+		{&SubscriptionPreConsumeRecord{}, "SubscriptionPreConsumeRecord"},
+		{&CustomOAuthProvider{}, "CustomOAuthProvider"},
+		{&UserOAuthBinding{}, "UserOAuthBinding"},
+	}
+	// 动态计算migration数量，确保errChan缓冲区足够大
+	errChan := make(chan error, len(migrations))
+
+	for _, m := range migrations {
+		wg.Add(1)
+		go func(model interface{}, name string) {
+			defer wg.Done()
+			if err := DB.AutoMigrate(model); err != nil {
+				errChan <- fmt.Errorf("failed to migrate %s: %v", name, err)
+			}
+		}(m.model, m.name)
+	}
+
+	// Wait for all migrations to complete
+	wg.Wait()
+	close(errChan)
+
+	// Check for any errors
+	for err := range errChan {
+		if err != nil {
+			return err
+		}
+	}
+	if common.UsingSQLite {
+		if err := ensureSubscriptionPlanTableSQLite(); err != nil {
+			return err
+		}
+	} else {
+		if err := DB.AutoMigrate(&SubscriptionPlan{}); err != nil {
+			return err
+		}
+	}
+	common.SysLog("database migrated")
+	return nil
+}
+
+>>>>>>> leinao/personal/dev
 func migrateLOGDB() error {
 	if err := MigrateAuditLogs(); err != nil {
 		return err

@@ -36,6 +36,7 @@ func TestMain(m *testing.M) {
 	}
 	sqlDB.SetMaxOpenConns(1)
 
+<<<<<<< HEAD
 	if err := db.AutoMigrate(
 		&Task{},
 		&User{},
@@ -60,6 +61,9 @@ func TestMain(m *testing.M) {
 		&SystemTask{},
 		&SystemTaskLock{},
 	); err != nil {
+=======
+	if err := db.AutoMigrate(&Task{}, &User{}, &Token{}, &Log{}, &Channel{}, &Ability{}, &DonationChannelSubmission{}); err != nil {
+>>>>>>> leinao/personal/dev
 		panic("failed to migrate: " + err.Error())
 	}
 
@@ -81,6 +85,7 @@ func truncateTables(t *testing.T) {
 		DB.Exec("DELETE FROM users")
 		DB.Exec("DELETE FROM logs")
 		DB.Exec("DELETE FROM channels")
+<<<<<<< HEAD
 		DB.Exec("DELETE FROM quota_data")
 		DB.Exec("DELETE FROM abilities")
 		DB.Exec("DELETE FROM top_ups")
@@ -91,6 +96,10 @@ func truncateTables(t *testing.T) {
 		DB.Exec("DELETE FROM system_instances")
 		DB.Exec("DELETE FROM system_task_locks")
 		DB.Exec("DELETE FROM system_tasks")
+=======
+		DB.Exec("DELETE FROM abilities")
+		DB.Exec("DELETE FROM donation_channel_submissions")
+>>>>>>> leinao/personal/dev
 	})
 }
 

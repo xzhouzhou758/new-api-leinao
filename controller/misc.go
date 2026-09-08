@@ -58,6 +58,7 @@ func GetStatus(c *gin.Context) {
 		"github_client_id":            common.GitHubClientId,
 		"discord_oauth":               system_setting.GetDiscordSettings().Enabled,
 		"discord_client_id":           system_setting.GetDiscordSettings().ClientId,
+		"discord_oauth_scopes":        system_setting.GetDiscordSettings().GetOAuthScopes(),
 		"linuxdo_oauth":               common.LinuxDOOAuthEnabled,
 		"linuxdo_client_id":           common.LinuxDOClientId,
 		"linuxdo_minimum_trust_level": common.LinuxDOMinimumTrustLevel,
@@ -111,6 +112,7 @@ func GetStatus(c *gin.Context) {
 		"HeaderNavModules":    common.OptionMap["HeaderNavModules"],
 		"SidebarModulesAdmin": common.OptionMap["SidebarModulesAdmin"],
 
+<<<<<<< HEAD
 		"oidc_enabled":                system_setting.GetOIDCSettings().Enabled,
 		"oidc_client_id":              system_setting.GetOIDCSettings().ClientId,
 		"oidc_authorization_endpoint": system_setting.GetOIDCSettings().AuthorizationEndpoint,
@@ -126,6 +128,25 @@ func GetStatus(c *gin.Context) {
 		"user_agreement_enabled":      legalSetting.UserAgreement != "",
 		"privacy_policy_enabled":      legalSetting.PrivacyPolicy != "",
 		"checkin_enabled":             operation_setting.GetCheckinSetting().Enabled,
+=======
+		"oidc_enabled":                 system_setting.GetOIDCSettings().Enabled,
+		"oidc_client_id":               system_setting.GetOIDCSettings().ClientId,
+		"oidc_authorization_endpoint":  system_setting.GetOIDCSettings().AuthorizationEndpoint,
+		"passkey_login":                passkeySetting.Enabled,
+		"passkey_display_name":         passkeySetting.RPDisplayName,
+		"passkey_rp_id":                passkeySetting.RPID,
+		"passkey_origins":              passkeySetting.Origins,
+		"passkey_allow_insecure":       passkeySetting.AllowInsecureOrigin,
+		"passkey_user_verification":    passkeySetting.UserVerification,
+		"passkey_attachment":           passkeySetting.AttachmentPreference,
+		"setup":                        constant.Setup,
+		"user_agreement_enabled":       legalSetting.UserAgreement != "",
+		"privacy_policy_enabled":       legalSetting.PrivacyPolicy != "",
+		"checkin_enabled":              operation_setting.GetCheckinSetting().Enabled,
+		"donation_guide_text":          operation_setting.GetDonationSetting().GuideText,
+		"donation_copy_button_text":    operation_setting.GetDonationSetting().CopyButtonText,
+		"donation_copy_button_content": operation_setting.GetDonationSetting().CopyButtonContent,
+>>>>>>> leinao/personal/dev
 	}
 
 	// 根据启用状态注入可选内容

@@ -40,3 +40,17 @@ type Provider interface {
 	// (e.g. the user_oauth_bindings table) return an empty string.
 	ProviderUserIDColumn() string
 }
+
+type OAuthAccessFlow string
+
+const (
+	OAuthAccessFlowLogin    OAuthAccessFlow = "login"
+	OAuthAccessFlowRegister OAuthAccessFlow = "register"
+	OAuthAccessFlowBind     OAuthAccessFlow = "bind"
+)
+
+// ConditionalAccessValidator is implemented by providers that need to decide
+// whether extra access checks should run for a specific OAuth flow.
+type ConditionalAccessValidator interface {
+	ValidateAccess(ctx context.Context, token *OAuthToken, oauthUser *OAuthUser, flow OAuthAccessFlow) error
+}
